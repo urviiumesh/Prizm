@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Document Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Basic styling for the chat interface (moved from previous example) */
+        .message { padding: 10px; margin-bottom: 5px; border-radius: 5px; clear: both; }
+        .user { background-color: yellow; float: right;}
+        .bot { background-color: lightblue; float: left;}
+        #chat-history { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; } /* Added scrollbar */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Accessible Document Assistant</h1>
+        <nav class="navbar">
+            <button class="nav-button" data-tab="home">Home</button>
+            <button class="nav-button" data-tab="upload">Upload/Scan</button>
+            <button class="nav-button" data-tab="chat">Chatbot</button>
+        </nav>
+        <button id="toggle-voice-bot" class="voice-bot-button">Disable Voice Bot</button>
+        <div class="font-size-controls">
+            <button id="increase-font">A+</button>
+            <button id="decrease-font">A-</button>
+        </div>
+        <main id="main-content">
+            <section id="home" class="tab-content">
+                <h2>Home</h2>
+                <p>Use the voice bot or buttons to navigate.</p>
+            </section>
+            <section id="upload" class="tab-content hidden">
+                <h2>Upload or Scan a Document</h2>
+                <button id="scan-button">Scan Document</button>
+                <button id="upload-button">Upload from Device</button>
+                <div id="uploaded-file-info"></div>
+            </section>
+            <section id="chat" class="tab-content hidden">
+                <h2>Chatbot</h2>
+                <div id="chat-history" class="chat-history"></div> <form id="chat-form">
+                    <input type="text" id="chat-input" placeholder="Ask a question">
+                    <button type="submit">Send</button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Existing JavaScript from your original HTML (if any) should go here.
+
+        const chatHistory = document.getElementById('chat-history');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+
+        chatForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const message = chatInput.value.trim();
+            if (message === "") return;
+
+            displayMessage(message, 'user');
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {throw new Error(err.error || 'Server error')});
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayMessage(data.reply, 'bot');
+            })
+            .catch(error => {
+                displayMessage("Error: " + error.message, 'bot');
+            });
+
+            chatInput.value = '';
+        });
+
+        function displayMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = message;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
