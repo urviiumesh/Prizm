@@ -102,7 +102,7 @@
         <!-- Image element that will show the live camera feed -->
         <img id="image-feed" alt="Camera Feed" />
         <div class="controls">
-            <button id="capture-btn">Capture & Extract Text</button>
+            <button id="capture-btn">Get Last Summary</button>
         </div>
         <div id="summarized-text"></div>
     </div>
@@ -114,28 +114,27 @@
 
         // Set the image source to the camera feed from the backend
         function startCamera() {
-            // Start the camera stream from the backend
-            const cameraStream = new EventSource("http://127.0.0.1:5000/camera");
+            // Set the source of the image element to the camera stream from the backend
+            imageElement.src = "http://127.0.0.1:5000/camera";
+        }
 
-            cameraStream.onmessage = (event) => {
-                const data = event.data;
-
-                if (event.event === "frame") {
-                    // Update the image with the frame data
-                    imageElement.src = "data:image/jpeg;base64," + data;
-                } else if (event.event === "text") {
-                    // Handle the extracted text
-                    const extractedData = JSON.parse(data);
-                    displayExtractedTextAndSummary(extractedData);
-                }
-            };
+        // Fetch the last summary from the server and display it
+        async function getLastSummary() {
+            const response = await fetch('http://127.0.0.1:5000/get_last_summary');
+            
+            if (response.ok) {
+                const data = await response.json();
+                displayExtractedTextAndSummary(data);
+            } else {
+                alert('Failed to fetch the last summary.');
+            }
         }
 
         // Display the extracted text and summary from the backend
         function displayExtractedTextAndSummary(data) {
-            const extractedText = data.extracted_text;
+            const extractedText = data.extracted_text || "No extracted text available.";
             const summary = data.summary || "No summary available.";
-            
+
             summarizedTextElement.innerHTML = `
                 <h3>Extracted Text:</h3>
                 <pre>${extractedText}</pre>
@@ -145,7 +144,7 @@
         }
 
         // Event listener for the capture button
-        captureBtn.addEventListener("click", startCamera);
+        captureBtn.addEventListener("click", getLastSummary);
 
         // Start the camera when the page loads
         window.onload = startCamera;

@@ -186,7 +186,7 @@ def summarize_text():
     return jsonify({"summary": summary})
 
 
-@app.route('/camera-feed')
+@app.route('/camera')
 def camera_feed():
     def generate():
         cap = cv2.VideoCapture(0)  # Open camera
@@ -225,6 +225,7 @@ def camera_feed():
 
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
 @app.route('/camera-text')
 def camera_text():
     def generate():
@@ -244,7 +245,6 @@ def camera_text():
         cap.release()
 
     return Response(generate(), mimetype='text/event-stream')
-
 
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
