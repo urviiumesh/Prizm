@@ -127,106 +127,6 @@
       transform: translateY(-5px);
     }
 
-    /* Triangular Prism Animation */
-    .header {
-      width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-      font-family: 'Montserrat', sans-serif;
-      color: rgb(255, 255, 255);
-      text-align: center;
-      font-size: 30px;
-    }
-
-    .header h3 {
-      opacity: 0.7;
-    }
-
-    .header small {
-      opacity: 0.7;
-      font-size: 20px;
-    }
-
-    .container {
-      width: 900px;
-      padding: 30px;
-      height: 430px;
-      box-shadow: 0px 1px 2px 0px rgba(182, 182, 182, 0.5);
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .con {
-      margin: 0 auto;
-      width: 0px;
-      margin-top: 150px;
-      transform-style: preserve-3d;
-      animation: rotate 10s linear infinite;
-    }
-
-    @keyframes rotate {
-      0% {
-        transform: rotateY(0deg) rotateX(10deg);
-      }
-      100% {
-        transform: rotateY(360deg) rotateX(10deg);
-      }
-    }
-
-    .triangle {
-      width: 0;
-      height: 0;
-      border-left: 45px solid transparent;
-      border-right: 45px solid transparent;
-      border-bottom: 130px solid hsl(calc(15 * var(--index)), 50%, 70%);
-      opacity: 0.7;
-      position: absolute;
-      transform: rotateY(calc(var(--j) * 180deg / 15)) rotateX(calc(var(--i) * 360deg / 10)) translateZ(200px);
-    }
-
-    .footer {
-      width: 900px;
-      height: 100px;
-      margin-top: 10px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .footer > h4 {
-      font-family: 'Montserrat', sans-serif;
-      color: rgb(255, 163, 163);
-      text-align: center;
-      font-size: 20px;
-      opacity: 0.6;
-    }
-
-    .img > a {
-      margin-top: -20px;
-    }
-
-    .footer .img {
-      width: 200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .img > a > img {
-      width: 50px;
-      display: inline;
-    }
-
-    .img > h4 {
-      font-family: 'Montserrat', sans-serif;
-      color: black;
-      text-align: center;
-      font-size: 15px;
-      opacity: 0.6;
-      display: inline;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: -10px;
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
       header {
@@ -243,10 +143,14 @@
       }
     }
   </style>
+  <link rel="icon" href="prism_3d_metal.png" type="image/x-icon">
 </head>
 <body>
   <header>
-    <h1>Prism</h1>
+    <h1>
+      <img src="fav_images\icons8-prisma-orm-32.png" alt="Prism Logo" style="vertical-align: middle; margin-right: 10px;" width="40px" height="40px">
+      Prism
+    </h1>
     <div class="navbar">
       <a href="index.html" class="nav-button">Home</a>
       <a href="upload.html" class="nav-button">Upload/Scan</a>
@@ -257,9 +161,6 @@
   <div class="container">
     <h1>Welcome to Document Assistant</h1>
     <p>Welcome! You can use voice commands to navigate through the site.</p>
-    <div class="con">
-      <div class="triangle" style="--index: 1; --i: 1; --j: 1;"></div>
-    </div>
     <div class="controls">
       <button id="voice-toggle">Enable Voice Bot</button>
       <button id="disable-voice">Disable Voice Bot</button>
@@ -267,13 +168,6 @@
       <button id="decrease-font">Decrease Font Size</button>
     </div>
   </div>
-  <footer class="footer">
-
-    </div>
-  </footer>
-  <script>
-    // JavaScript Code Here (unchanged)
-  </script>
 </body>
   <script>
     // Speech Recognition Setup
