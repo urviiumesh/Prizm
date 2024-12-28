@@ -51,7 +51,7 @@
         #summarized-text {
             margin-top: 2rem;
             background: var(--card);
-            color: var(--text);
+            color: white;
             padding: 1rem;
             border-radius: 8px;
         }
@@ -138,11 +138,9 @@
             const texts = data.texts || ["No scanned texts available."];
             
             summarizedTextElement.innerHTML = `
-                <h3>Scanned Texts:</h3>
-                <ul>
-                    ${texts.map(text => `<li>${text}</li>`).join('')}
-                </ul>
-            `;
+                <h3>Summarised Text:</h3>
+                
+                    ${texts.map(text => `${text}`).join('')}`;
         }
     
         // Read out the scanned texts using speech synthesis
