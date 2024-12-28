@@ -34,7 +34,7 @@
 
     .container {
       max-width: 900px;
-      margin: 100px auto 0; /* To account for fixed header */
+      margin: 100px auto 0;
       text-align: center;
       padding: 20px;
       background-color: rgba(0, 0, 0, 0.7);
@@ -127,6 +127,106 @@
       transform: translateY(-5px);
     }
 
+    /* Triangular Prism Animation */
+    .header {
+      width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: 'Montserrat', sans-serif;
+      color: rgb(255, 255, 255);
+      text-align: center;
+      font-size: 30px;
+    }
+
+    .header h3 {
+      opacity: 0.7;
+    }
+
+    .header small {
+      opacity: 0.7;
+      font-size: 20px;
+    }
+
+    .container {
+      width: 900px;
+      padding: 30px;
+      height: 430px;
+      box-shadow: 0px 1px 2px 0px rgba(182, 182, 182, 0.5);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .con {
+      margin: 0 auto;
+      width: 0px;
+      margin-top: 150px;
+      transform-style: preserve-3d;
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotateY(0deg) rotateX(10deg);
+      }
+      100% {
+        transform: rotateY(360deg) rotateX(10deg);
+      }
+    }
+
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 45px solid transparent;
+      border-right: 45px solid transparent;
+      border-bottom: 130px solid hsl(calc(15 * var(--index)), 50%, 70%);
+      opacity: 0.7;
+      position: absolute;
+      transform: rotateY(calc(var(--j) * 180deg / 15)) rotateX(calc(var(--i) * 360deg / 10)) translateZ(200px);
+    }
+
+    .footer {
+      width: 900px;
+      height: 100px;
+      margin-top: 10px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer > h4 {
+      font-family: 'Montserrat', sans-serif;
+      color: rgb(255, 163, 163);
+      text-align: center;
+      font-size: 20px;
+      opacity: 0.6;
+    }
+
+    .img > a {
+      margin-top: -20px;
+    }
+
+    .footer .img {
+      width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .img > a > img {
+      width: 50px;
+      display: inline;
+    }
+
+    .img > h4 {
+      font-family: 'Montserrat', sans-serif;
+      color: black;
+      text-align: center;
+      font-size: 15px;
+      opacity: 0.6;
+      display: inline;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: -10px;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       header {
@@ -157,6 +257,9 @@
   <div class="container">
     <h1>Welcome to Document Assistant</h1>
     <p>Welcome! You can use voice commands to navigate through the site.</p>
+    <div class="con">
+      <div class="triangle" style="--index: 1; --i: 1; --j: 1;"></div>
+    </div>
     <div class="controls">
       <button id="voice-toggle">Enable Voice Bot</button>
       <button id="disable-voice">Disable Voice Bot</button>
@@ -164,6 +267,14 @@
       <button id="decrease-font">Decrease Font Size</button>
     </div>
   </div>
+  <footer class="footer">
+
+    </div>
+  </footer>
+  <script>
+    // JavaScript Code Here (unchanged)
+  </script>
+</body>
   <script>
     // Speech Recognition Setup
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -206,9 +317,12 @@
       if (command.includes("home")) {
         speak("Navigating to the home page.");
         window.location.href = "index.html";
-      } else if (command.includes("upload") || command.includes("scan")) {
+      } else if (command.includes("upload")) {
         speak("Navigating to the upload or scan page.");
         window.location.href = "upload.html";
+        } else if (command.includes("scan")) {
+          speak("Navigating to the scan page.");
+          window.location.href="camera.html"
       } else if (command.includes("chatbot")) {
         speak("Navigating to the chatbot page.");
         window.location.href = "chatbot.html";

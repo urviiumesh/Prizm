@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice-based Chatbot - Accessible Document Assistant</title>
     <style>
-        :root {
+         :root {
             --primary: #0D4F8B;
             --secondary: #1E293B;
             --accent: #4A90E2;
@@ -66,20 +66,22 @@
         }
 
         nav button {
-            padding: 10px 20px;
-            border-radius: 8px;
-            background-color: var(--forbutton);
-            color: black;
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
-            border: 2px solid transparent;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s ease;
+            background-color: #f1c40f;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid transparent;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
 
         nav button:hover {
-            background-color: var(--accent);
+            background-color: #f39c12;
+      transform: translateY(-5px);
+      border-color: #f39c12;
         }
 
         button {
@@ -228,123 +230,175 @@
             </div>
         </main>
     </div>
-</body>
-</html>
     <script>
-    // Web Speech API - Speech Recognition and Speech Synthesis
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.continuous = true;
-    recognition.lang = 'en-US';
-
-    const synth = window.speechSynthesis;
-    let isProcessing = false; // Prevent overlapping requests
-
-    // Voice recognition setup
-    recognition.onresult = function (event) {
-        const command = event.results[event.resultIndex][0].transcript.toLowerCase();
-        console.log("Command:", command);
-        displayUserInput(command); // Display the user's input
-        handleVoiceCommand(command);
-    };
-
-    // Handle commands
-    function handleVoiceCommand(command) {
-        if (isProcessing) return; // Ignore if already processing a request
-
-        // Navigation commands
-        if (command.includes("home")) {
-            window.location.href = "index.html";
-        } else if (command.includes("upload") || command.includes("scan")) {
-            window.location.href = "upload.html";
-        } else if (command.includes("chatbot")) {
-            window.location.href = "chatbot.html";
-        } else {
-            // Send other commands to the backend
-            sendToBackend(command);
-        }
-    }
-
-    // Start the voice recognition
-    function startVoiceRecognition() {
-        recognition.start();
-        document.getElementById("start-recording").disabled = true;
-        document.getElementById("stop-recording").disabled = false;
-        speak("Voice Chat bot is now enabled");
-    }
-
-    // Stop the voice recognition
-    function stopVoiceRecognition() {
-        recognition.stop();
-        document.getElementById("start-recording").disabled = false;
-        document.getElementById("stop-recording").disabled = true;
-        speak("Voice bot is now disabled");
-    }
-
-    // Speak a message using speech synthesis
-    function speak(message) {
-        const utterance = new SpeechSynthesisUtterance(message);
-        utterance.lang = 'en-US';
-        synth.speak(utterance);
-    }
-
-    // Send message to backend
-    function sendToBackend(userInput) {
-        isProcessing = true;
-        speak("Processing your request...");
-        console.log("Sending to backend:", userInput);
-
-        fetch('http://127.0.0.1:5000/chatbot', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userInput }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Backend response:", data);
-            if (data.response) {
-                speak(data.response);  // Speak the response
-                addMessageToChat(`Bot: ${data.response}`); // Display in chat
+        // Web Speech API - Speech Recognition and Speech Synthesis
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.lang = 'en-US';
+    
+        const synth = window.speechSynthesis;
+        let isProcessing = false; // Prevent overlapping requests
+        let timeoutId; // Variable to store the timeout ID
+    
+        const INACTIVITY_TIMEOUT = 5000; // Timeout duration in milliseconds (e.g., 5 seconds)
+    
+        // Voice recognition setup
+        recognition.onresult = function (event) {
+            const command = event.results[event.resultIndex][0].transcript.toLowerCase();
+            console.log("Command:", command);
+            displayUserInput(command); // Display the user's input
+            handleVoiceCommand(command);
+    
+            // Reset timeout whenever the bot detects speech
+            resetTimeout();
+        };
+    
+        // Handle commands
+        function handleVoiceCommand(command) {
+            if (isProcessing) return; // Ignore if already processing a request
+    
+            // Navigation commands
+            if (command.includes("home")) {
+                window.location.href = "index.html";
+            } else if (command.includes("upload") || command.includes("scan")) {
+                window.location.href = "upload.html";
+            } else if (command.includes("chatbot")) {
+                window.location.href = "chatbot.html";
             } else {
-                speak("I couldn't understand your request.");
+                // Send other commands to the backend
+                sendToBackend(command);
             }
-        })
-        .catch(error => {
-            console.error("Error connecting to backend:", error);
-            speak("Error connecting to the server.");
-        })
-        .finally(() => {
-            isProcessing = false; // Reset flag
-        });
-    }
-
-    // Add user's input to chat history
-    function displayUserInput(userInput) {
-        const chatHistory = document.getElementById('chat-history');
-        const userMessage = document.createElement('div');
-        userMessage.className = 'user-message';
-        userMessage.textContent = `You: ${userInput}`;
-        chatHistory.appendChild(userMessage);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-    }
-
-    // Add bot's response to chat history
-    function addMessageToChat(message) {
-        const chatHistory = document.getElementById('chat-history');
-        const botMessage = document.createElement('div');
-        botMessage.className = 'bot-message';
-        botMessage.textContent = message;
-        chatHistory.appendChild(botMessage);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-    }
-
-    // Voice recording buttons
-    document.getElementById("start-recording").addEventListener("click", startVoiceRecognition);
-    document.getElementById("stop-recording").addEventListener("click", stopVoiceRecognition);
-
-    // Start voice recognition immediately after page load
-    window.onload = function () {
-        startVoiceRecognition();
-    };
+        }
+    
+        // Start the voice recognition
+        function startVoiceRecognition() {
+            recognition.start();
+            document.getElementById("start-recording").disabled = true;
+            document.getElementById("stop-recording").disabled = false;
+            speak("Voice Chat bot is now enabled");
+        }
+    
+        // Stop the voice recognition
+        function stopVoiceRecognition() {
+    recognition.stop(); // Stop listening
+    synth.cancel(); // Stop any ongoing speech synthesis
+    document.getElementById("start-recording").disabled = false; // Enable start button
+    document.getElementById("stop-recording").disabled = true; // Disable stop button
+    speak("Voice bot is now disabled"); // Notify the user that the bot is disabled
+}
+    
+        // Speak a message using speech synthesis
+        function speak(message) {
+            const utterance = new SpeechSynthesisUtterance(message);
+            utterance.lang = 'en-US';
+            synth.speak(utterance);
+        }
+    
+        // Send message to backend
+        function sendToBackend(userInput) {
+            isProcessing = true;
+            speak("Processing your request...");
+            console.log("Sending to backend:", userInput);
+    
+            fetch('http://127.0.0.1:5000/chatbot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userInput }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Backend response:", data);
+                if (data.response) {
+                    speak(data.response);  // Speak the response
+                    addMessageToChat(`Bot: ${data.response}`); // Display in chat
+                    askToContinue(); // Ask if the user wants to continue the conversation
+                } else {
+                    speak("I couldn't understand your request.");
+                    askToContinue(); // Even if no valid response, ask to continue
+                }
+            })
+            .catch(error => {
+                console.error("Error connecting to backend:", error);
+                speak("Error connecting to the server.");
+                askToContinue(); // Ask to continue even if there's an error
+            })
+            .finally(() => {
+                isProcessing = false; // Reset flag
+            });
+        }
+    
+        // Add user's input to chat history
+        function displayUserInput(userInput) {
+            const chatHistory = document.getElementById('chat-history');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'user-message';
+            userMessage.textContent = `You: ${userInput}`;
+            chatHistory.appendChild(userMessage);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+    
+        // Add bot's response to chat history
+        function addMessageToChat(message) {
+            const chatHistory = document.getElementById('chat-history');
+            const botMessage = document.createElement('div');
+            botMessage.className = 'bot-message';
+            botMessage.textContent = message;
+            chatHistory.appendChild(botMessage);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+    
+        // Ask the user if they want to continue the conversation
+        function resetTimeout() {
+            if (timeoutId) {
+                clearTimeout(timeoutId); // Clear existing timeout
+            }
+    
+            // Set a new timeout to stop voice recognition after inactivity
+            timeoutId = setTimeout(() => {
+                speak("You have been inactive for a while. I am turning off the voice bot.");
+                stopVoiceRecognition(); // Ensure bot stops after inactivity
+            }, INACTIVITY_TIMEOUT); // 5 seconds of inactivity
+        }
+    
+        // Ask the user if they want to continue the conversation
+        function askToContinue() {
+            speak("Would you like to ask another question?");
+            stopVoiceRecognition();  // Stop listening for a while to let user respond
+    
+            // Re-enable listening for user response immediately after asking
+            recognition.onresult = function (event) {
+                const command = event.results[event.resultIndex][0].transcript.toLowerCase();
+                console.log("Command:", command);
+    
+                if (command.includes("yes")) {
+                    startVoiceRecognition(); // Restart voice recognition to continue the conversation
+                } else if (command.includes("no")) {
+                    speak("Goodbye!");
+                    stopVoiceRecognition(); // End the conversation
+                } else {
+                    speak("I didn't quite catch that. Please say yes or no.");
+                    askToContinue(); // Repeat the question if the user responds with anything other than yes/no
+                }
+            };
+    
+            // Check if recognition is already active before starting again
+            if (recognition.running) {
+                recognition.stop(); // Stop first if it's running
+            }
+    
+            recognition.start(); // Restart recognition for user response
+            resetTimeout(); // Reset timeout every time a response is captured
+        }
+    
+        // Voice recording buttons
+        document.getElementById("start-recording").addEventListener("click", startVoiceRecognition);
+        document.getElementById("stop-recording").addEventListener("click", stopVoiceRecognition);
+    
+        // Start voice recognition immediately after page load
+        window.onload = function () {
+            startVoiceRecognition();
+        };
     </script>
+    
 </body>
 </html>

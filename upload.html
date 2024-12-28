@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document Scanner - Auto Upload</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #0D4F8B; /* New primary color */
+            --primary: #0D4F8B;
             --secondary: #1E293B;
-            --accent: #4A90E2; /* New accent color */
+            --accent: #4A90E2;
             --success: #22C55E;
             --error: #EF4444;
         }
-    
+
         body {
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(to bottom, #000011, #000022);
@@ -27,18 +27,18 @@
             min-height: 100vh;
             transition: all 0.3s ease-in-out;
         }
-    
+
         .upload-zone {
             border: 2px dashed var(--primary);
             background: rgba(13, 79, 139, 0.1);
             transition: all 0.3s ease;
         }
-    
+
         .upload-zone:hover {
             border-color: var(--accent);
             background: rgba(13, 79, 139, 0.2);
         }
-    
+
         .progress-bar {
             width: 100%;
             height: 4px;
@@ -46,26 +46,32 @@
             border-radius: 2px;
             overflow: hidden;
         }
-    
+
+        #summary {
+            background-color: #25334b;
+            padding: 20px;
+            font-size: larger;
+        }
+
         .progress-bar-fill {
             height: 100%;
             background: var(--primary);
             transition: width 0.3s ease;
         }
-    
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-    
+
         .pulse {
             animation: pulse 2s infinite;
         }
-    
+
         nav {
-            background-color: #000000; /* Yellow background */
-            color: #000; /* Black text */
+            background-color: #000000;
+            color: #000;
             padding: 10px 20px;
             width: 100%;
             position: fixed;
@@ -73,35 +79,18 @@
             left: 0;
             z-index: 10;
             display: flex;
-            justify-content: center; /* Center the buttons */
+            justify-content: center;
             align-items: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
-    
+
         nav a {
             margin: 0 1rem;
         }
-    
+
         nav button {
-            padding: 10px 20px;
-            border-radius: 8px;
-            background-color: #f1c40f; /* Yellow background */
-            color: #000; /* Black text */
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
-            border: 2px solid transparent;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s ease;
-        }
-    
-        nav button:hover {
-            background-color: #000000; /* Darker yellow on hover */
-        }
-    
-        button {
-            background-color: #f1c40f; /* Yellow background */
-            color: #000; /* Black text */
+            background-color: #f1c40f;
+            color: #000;
             padding: 10px 20px;
             border-radius: 8px;
             font-size: 1rem;
@@ -111,16 +100,34 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
-    
+
+        nav button:hover {
+            background-color: #f39c12;
+            transform: translateY(-5px);
+            border-color: #f39c12;
+        }
+
+        button {
+            background-color: #f1c40f;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
     </style>
-    </head>
-    <body>
-        <nav role="navigation" aria-label="Main navigation">
-            <a href="index.html"><button aria-label="Go to home page" id="home-tab">Home</button></a>
-            <a href="upload.html"><button aria-label="Go to upload page" id="upload-tab">Upload/Scan</button></a>
-            <a href="chatbot.html"><button aria-label="Go to chatbot page" id="chatbot-tab">Chatbot</button></a>
-            <a href="camera.html"><button aria-current="page" aria-label="Current page: Scanner" id="scan-tab">Scan</button></a>
-        </nav>
+</head>
+<body>
+    <nav role="navigation" aria-label="Main navigation">
+        <a href="index.html"><button aria-label="Go to home page" id="home-tab">Home</button></a>
+        <a href="upload.html"><button aria-label="Go to upload page" id="upload-tab">Upload/Scan</button></a>
+        <a href="chatbot.html"><button aria-label="Go to chatbot page" id="chatbot-tab">Chatbot</button></a>
+        <a href="camera.html"><button aria-current="page" aria-label="Current page: Scanner" id="scan-tab">Scan</button></a>
+    </nav>
 
     <div class="container mx-auto px-4 py-8 max-w-4xl mt-20">
         <header class="text-center mb-12">
@@ -130,13 +137,13 @@
 
         <main>
             <div class="upload-zone rounded-lg p-8 text-center cursor-pointer mb-8">
-                <input type="file" id="file-upload" accept="image/*" class="hidden" />
+                <input type="file" id="file-upload" accept="image/*" multiple class="hidden">
                 <div class="flex flex-col items-center justify-center space-y-4">
                     <svg class="w-16 h-16 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
                     <div id="upload-text" class="text-lg">
-                        Drop your file here or click to browse
+                        Drop your files here or click to browse (Max 5 files)
                     </div>
                     <div id="file-info" class="text-sm text-gray-400"></div>
                 </div>
@@ -152,15 +159,11 @@
                 </div>
             </div>
 
-            <div id="results" class="hidden bg-gray-800 rounded-lg p-6 space-y-6">
-                <div class="border-b border-gray-700 pb-4">
-                    <h3 class="text-xl font-semibold mb-4">Extracted Text</h3>
-                    <div id="extracted-text" class="text-gray-300 whitespace-pre-wrap"></div>
-                </div>
-                <div>
-                    <h3 class="text-xl font-semibold mb-4">Summary</h3>
-                    <div id="summary" class="text-gray-300"></div>
-                </div>
+            <img id="image-preview" class="hidden" alt="Image Preview">
+
+            <div id="results" class="hidden">
+                <p id="extracted-text"></p>
+                <p id="summary"></p>
             </div>
 
             <div class="text-center mt-8">
@@ -182,23 +185,24 @@
             const extractedTextEl = document.getElementById('extracted-text');
             const summaryEl = document.getElementById('summary');
             const generateSummaryBtn = document.getElementById('generate-summary');
-            const stopVoiceButton = document.createElement('button'); // Stop button
-    
+            const imagePreview = document.getElementById('image-preview');
+            const stopVoiceButton = document.createElement('button');
+
             stopVoiceButton.innerText = "Stop Reading";
             stopVoiceButton.id = "stop-voice";
-            stopVoiceButton.style.backgroundColor = '#EF4444'; // Red background for stop button
+            stopVoiceButton.style.backgroundColor = '#EF4444';
             stopVoiceButton.style.color = '#fff';
             document.body.appendChild(stopVoiceButton);
-    
+
             let synth = window.speechSynthesis;
             let isReading = false;
             let currentUtterance = null;
-    
+
             function updateProgress(percent) {
                 progressBarFill.style.width = `${percent}%`;
                 progressPercentage.textContent = `${percent}%`;
             }
-    
+
             function showError(message) {
                 fileInfo.textContent = message;
                 fileInfo.className = 'text-red-500 mt-2';
@@ -207,44 +211,58 @@
                     fileInfo.className = 'text-sm text-gray-400';
                 }, 5000);
             }
-    
+
+            function previewImage(file) {
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select a valid image file.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+
             async function uploadFile(file) {
                 if (!file.type.startsWith('image/')) {
                     showError('Please select a valid image file.');
                     return;
                 }
-    
+
                 progressContainer.classList.remove('hidden');
                 resultsSection.classList.add('hidden');
-    
+
                 const formData = new FormData();
                 formData.append('file', file);
-    
+
                 try {
                     progressStatus.textContent = 'Uploading image...';
                     updateProgress(30);
-    
+
                     const response = await fetch('http://127.0.0.1:5000/upload_image', {
                         method: 'POST',
                         body: formData,
                     });
-    
+
                     if (!response.ok) {
                         const errorData = await response.json();
                         throw new Error(errorData.error || 'Upload failed');
                     }
-    
+
                     updateProgress(70);
-    
+
                     const data = await response.json();
-    
+
                     extractedTextEl.textContent = data.extracted_text || 'No text extracted';
                     summaryEl.textContent = data.summary || 'No summary generated';
-    
+
                     updateProgress(100);
                     progressStatus.textContent = 'Complete!';
                     resultsSection.classList.remove('hidden');
-    
+
                     setTimeout(() => {
                         progressContainer.classList.add('hidden');
                     }, 2000);
@@ -254,97 +272,100 @@
                     progressContainer.classList.add('hidden');
                 }
             }
-    
+
             async function fetchSummary() {
                 try {
                     progressStatus.textContent = 'Fetching last summary...';
-    
+
                     const response = await fetch('http://127.0.0.1:5000/get_last_summary');
                     if (!response.ok) {
                         const errorData = await response.json();
                         throw new Error(errorData.error || 'Failed to fetch summary');
                     }
-    
+
                     const data = await response.json();
                     summaryEl.textContent = data.last_summary || 'No summary found';
                     resultsSection.classList.remove('hidden');
                     
-                    readSummaryAloud(data.last_summary); // Read summary aloud when fetched
+                    readSummaryAloud(data.last_summary);
                 } catch (error) {
                     console.error(error);
                     showError(error.message || 'Failed to generate summary.');
                 }
             }
-    
-            // Function to read the summary aloud
+
             function readSummaryAloud(text) {
                 if (synth.speaking || synth.pending) {
-                    synth.cancel(); // Cancel any ongoing speech
+                    synth.cancel();
                 }
-    
+
                 if (text !== '') {
                     let utterance = new SpeechSynthesisUtterance(text);
                     utterance.onstart = () => {
                         isReading = true;
-                        stopVoiceButton.style.display = 'block'; // Show stop button
+                        stopVoiceButton.style.display = 'block';
                     };
-    
+
                     utterance.onend = () => {
                         isReading = false;
-                        stopVoiceButton.style.display = 'none'; // Hide stop button when done
+                        stopVoiceButton.style.display = 'none';
                     };
-    
+
                     synth.speak(utterance);
                     currentUtterance = utterance;
                 }
             }
-    
-            // Stop reading the summary
+
             stopVoiceButton.addEventListener('click', () => {
                 if (synth.speaking || synth.pending) {
-                    synth.cancel(); // Stop any ongoing speech
-                    stopVoiceButton.style.display = 'none'; // Hide stop button
+                    synth.cancel();
+                    stopVoiceButton.style.display = 'none';
                 }
             });
-    
-            // Handle drag and drop
+
             uploadZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 uploadZone.classList.add('border-accent');
             });
-    
+
             uploadZone.addEventListener('dragleave', () => {
                 uploadZone.classList.remove('border-accent');
             });
-    
+
             uploadZone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 uploadZone.classList.remove('border-accent');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    fileInfo.textContent = `Selected: ${file.name}`;
-                    uploadFile(file);
+                const files = e.dataTransfer.files;
+                if (files.length > 5) {
+                    showError('You can upload a maximum of 5 files at a time.');
+                    return;
                 }
+                Array.from(files).forEach((file) => {
+                    fileInfo.textContent = `Selected: ${file.name}`;
+                    previewImage(file);
+                    uploadFile(file);
+                });
             });
-    
-            // Handle click upload
+
             uploadZone.addEventListener('click', () => {
                 fileInput.click();
             });
-    
+
             fileInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    fileInfo.textContent = `Selected: ${file.name}`;
-                    uploadFile(file);
+                const files = event.target.files;
+                if (files.length > 5) {
+                    showError('You can upload a maximum of 5 files at a time.');
+                    return;
                 }
+                Array.from(files).forEach((file) => {
+                    fileInfo.textContent = `Selected: ${file.name}`;
+                    previewImage(file);
+                    uploadFile(file);
+                });
             });
-    
-            // Generate summary button
+
             generateSummaryBtn.addEventListener('click', fetchSummary);
         });
     </script>
-    
-    
 </body>
 </html>
