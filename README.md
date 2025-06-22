@@ -29,16 +29,25 @@ This repository includes:
 
 #### Frontend
 index.html — Home page with voice-enabled navigation.
+
 camera.html — Live document scanning with a real-time feed and summarization.
+
 chatbot.html — Voice-enabled AI chatbot for legal and medical queries.
+
 styles.css — Unified styling for an accessible, high-contrast user interface.
+
 scripts.js — Supporting client-side JavaScript for interaction and controls.
+
 upload.html - Interactive upload page for OCR, AI summarization, and voice playback.
+
 
 #### Backend
 camera.py — Handles real-time camera feed and captures frames.
+
 regex.py — Processes extracted text and applies masking for sensitive information.
+
 test.py —  Provides endpoints to scan documents via webcam or upload, extracts text with OCR, and summarizes using Gemini AI.
+
 
 ### Accessibility Commitments
 1. High-contrast color palette and adjustable font sizes
