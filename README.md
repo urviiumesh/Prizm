@@ -5,7 +5,6 @@
 Prizm is an innovative web application designed to empower visually impaired individuals by providing real-time, AI-powered guidance to navigate complex legal and medical documents. With easy document scanning, simplified summaries, and an AI chatbot for support, Prizm makes understanding intricate legal and medical terminology accessible, restoring confidence, independence, and empowerment to visually impaired users.
 
 ### Key Features
-
 #### 1. Seamless Document Scanning
 Capture documents easily using your phone’s camera. Real-time visuals and alignment feedback ensure clear scans every time.
 
