@@ -32,11 +32,12 @@ camera.html — Live document scanning with a real-time feed and summarization.
 chatbot.html — Voice-enabled AI chatbot for legal and medical queries.
 styles.css — Unified styling for an accessible, high-contrast user interface.
 scripts.js — Supporting client-side JavaScript for interaction and controls.
+upload.html - Uploading page for document ,images, sending them to a Flask backend for OCR and Gemini-based summarization, and optionally reading the summary aloud using speech synthesis.
 
 #### Backend
 camera.py — Handles real-time camera feed and captures frames.
 regex.py — Processes extracted text and applies masking for sensitive information.
-test.py — Provides a test endpoint to check backend availability.
+test.py — Uses OpenCV and EasyOCR to detect and scan documents from a webcam or uploaded images, extracts text, and optionally summarizes or analyzes it using Google's Gemini API.
 
 ### Accessibility Commitments
 1. High-contrast color palette and adjustable font sizes
