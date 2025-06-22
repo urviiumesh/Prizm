@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>App Status Check</title>
+</head>
+<body>
+  <div id="appStatus"></div> <button id="checkButton">Check Status</button>
+  <script>async function testAppConnection() {
+    const testEndpoint = "http://127.0.0.1:5000/test"; // Dedicated test endpoint
+    const statusEl = document.getElementById('status'); // Element to display status
+
+    if (!statusEl) {
+        console.error("Status element not found!");
+        return;
+    }
+
+    statusEl.textContent = "Testing connection...";
+
+    try {
+        const response = await fetch(testEndpoint, {
+            method: "GET", // Simple GET request for testing
+            cache: 'no-cache' // Prevents caching which could give false positives
+        });
+
+        if (response.ok) {
+            statusEl.textContent = "App is online!";
+            statusEl.style.color = "green"; // Indicate success
+            console.log("App is online!");
+            return true; // Return true to indicate success
+        } else {
+            const errorText = await response.text();
+            statusEl.textContent = `App is offline: ${response.status} - ${errorText}`;
+            statusEl.style.color = "red"; // Indicate failure
+            console.error(`App is offline: ${response.status} - ${errorText}`);
+            return false; // Return false to indicate failure
+        }
+    } catch (error) {
+        statusEl.textContent = `Connection error: ${error.message}`;
+        statusEl.style.color = "red";
+        console.error("Connection error:", error);
+        return false; // Return false to indicate failure
+    }
+}
+
+
+// Example usage (e.g., on button click or page load):
+const testButton = document.getElementById("testButton");
+if (testButton){
+    testButton.addEventListener("click", testAppConnection);
+} else {
+    console.warn("Test button not found. Running test automatically");
+    testAppConnection();
+}
+
+//If you want to run the test automatically when the page loads, you can add this:
+window.addEventListener('load', testAppConnection);</script> </body>
+</html>

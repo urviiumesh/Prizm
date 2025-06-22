@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-based Chatbot - Accessible Document Assistant</title>
+    <style>
+        :root {
+            --primary: #0D4F8B;
+            --secondary: #1E293B;
+            --accent: #4A90E2;
+            --success: #22C55E;
+            --error: #EF4444;
+            --forbutton:#f1c40f ;
+        
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, #000011, #000022);
+            color: white;
+            margin: 0;
+            padding: 0;
+            background-attachment: fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: all 0.3s ease-in-out;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+
+        nav {
+            margin: 1rem 0;
+            display: flex;
+            gap: 15px;
+            background-color: #000000;
+            color: #000;
+            padding: 10px 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        nav a {
+            margin: 0 1rem;
+        }
+
+        nav button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background-color: var(--forbutton);
+            color: black;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        nav button:hover {
+            background-color: var(--accent);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--accent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .chat-container {
+            background-color: var(--secondary);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #chat-history {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .bot-message {
+            color: var(--text);
+            padding: 10px;
+            background-color: var(--primary);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .voice-controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #start-recording, #stop-recording {
+            background-color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #start-recording:hover, #stop-recording:hover {
+            background-color: var(--forbutton);
+        }
+
+        #start-recording:disabled, #stop-recording:disabled {
+            background-color: var(--secondary);
+            cursor: not-allowed;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--primary);
+            color: var(--text);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 10;
+            display: none;
+        }
+
+        .skip-link:focus {
+            display: block;
+        }
+        
+        h2{
+            font-size: 2.5rem;
+            color: #f1c40f
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .chat-container {
+                padding: 1.5rem;
+            }
+
+            #chat-history {
+                padding: 0.5rem;
+            }
+
+            .voice-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="container">
+        <br><br>
+        <br><br>
+        <br><br>
+        <br><br>
+        <h2 style="text-align: center;">Voice-Based Document Assistant</h2>
+        <nav role="navigation" aria-label="Main navigation">
+            <a href="index.html"><button aria-label="Go to home page">Home</button></a>
+            <a href="upload.html"><button aria-label="Go to upload page">Upload/Scan</button></a>
+            <a href="chatbot.html"><button aria-current="page" aria-label="Current page: Chatbot">Chatbot</button></a>
+        </nav>
+        <br><br>
+        <main id="main-content">
+            <div class="chat-container" role="region" aria-label="Chat interface">
+                <div id="chat-history" role="log" aria-label="Chat history" aria-live="polite">
+                    <div class="bot-message">
+                        Hello! I'm your document assistant. How can I help you today?
+                    </div>
+                </div>
+
+                <div class="voice-controls" aria-live="polite">
+                    <button id="start-recording" aria-label="Start voice recording">Start Speaking</button>
+                    <button id="stop-recording" aria-label="Stop voice recording" disabled>Stop Speaking</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+    <script>
+    // Web Speech API - Speech Recognition and Speech Synthesis
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = true;
+    recognition.lang = 'en-US';
+
+    const synth = window.speechSynthesis;
+    let isProcessing = false; // Prevent overlapping requests
+
+    // Voice recognition setup
+    recognition.onresult = function (event) {
+        const command = event.results[event.resultIndex][0].transcript.toLowerCase();
+        console.log("Command:", command);
+        displayUserInput(command); // Display the user's input
+        handleVoiceCommand(command);
+    };
+
+    // Handle commands
+    function handleVoiceCommand(command) {
+        if (isProcessing) return; // Ignore if already processing a request
+
+        // Navigation commands
+        if (command.includes("home")) {
+            window.location.href = "index.html";
+        } else if (command.includes("upload") || command.includes("scan")) {
+            window.location.href = "upload.html";
+        } else if (command.includes("chatbot")) {
+            window.location.href = "chatbot.html";
+        } else {
+            // Send other commands to the backend
+            sendToBackend(command);
+        }
+    }
+
+    // Start the voice recognition
+    function startVoiceRecognition() {
+        recognition.start();
+        document.getElementById("start-recording").disabled = true;
+        document.getElementById("stop-recording").disabled = false;
+        speak("Voice Chat bot is now enabled");
+    }
+
+    // Stop the voice recognition
+    function stopVoiceRecognition() {
+        recognition.stop();
+        document.getElementById("start-recording").disabled = false;
+        document.getElementById("stop-recording").disabled = true;
+        speak("Voice bot is now disabled");
+    }
+
+    // Speak a message using speech synthesis
+    function speak(message) {
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.lang = 'en-US';
+        synth.speak(utterance);
+    }
+
+    // Send message to backend
+    function sendToBackend(userInput) {
+        isProcessing = true;
+        speak("Processing your request...");
+        console.log("Sending to backend:", userInput);
+
+        fetch('http://127.0.0.1:5000/chatbot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userInput }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Backend response:", data);
+            if (data.response) {
+                speak(data.response);  // Speak the response
+                addMessageToChat(`Bot: ${data.response}`); // Display in chat
+            } else {
+                speak("I couldn't understand your request.");
+            }
+        })
+        .catch(error => {
+            console.error("Error connecting to backend:", error);
+            speak("Error connecting to the server.");
+        })
+        .finally(() => {
+            isProcessing = false; // Reset flag
+        });
+    }
+
+    // Add user's input to chat history
+    function displayUserInput(userInput) {
+        const chatHistory = document.getElementById('chat-history');
+        const userMessage = document.createElement('div');
+        userMessage.className = 'user-message';
+        userMessage.textContent = `You: ${userInput}`;
+        chatHistory.appendChild(userMessage);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    // Add bot's response to chat history
+    function addMessageToChat(message) {
+        const chatHistory = document.getElementById('chat-history');
+        const botMessage = document.createElement('div');
+        botMessage.className = 'bot-message';
+        botMessage.textContent = message;
+        chatHistory.appendChild(botMessage);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    // Voice recording buttons
+    document.getElementById("start-recording").addEventListener("click", startVoiceRecognition);
+    document.getElementById("stop-recording").addEventListener("click", stopVoiceRecognition);
+
+    // Start voice recognition immediately after page load
+    window.onload = function () {
+        startVoiceRecognition();
+    };
+    </script>
+</body>
+</html>

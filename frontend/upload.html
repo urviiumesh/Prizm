@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Scanner - Auto Upload</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0D4F8B; /* New primary color */
+            --secondary: #1E293B;
+            --accent: #4A90E2; /* New accent color */
+            --success: #22C55E;
+            --error: #EF4444;
+        }
+    
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, #000011, #000022);
+            color: white;
+            margin: 0;
+            padding: 0;
+            background-attachment: fixed;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: all 0.3s ease-in-out;
+        }
+    
+        .upload-zone {
+            border: 2px dashed var(--primary);
+            background: rgba(13, 79, 139, 0.1);
+            transition: all 0.3s ease;
+        }
+    
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(13, 79, 139, 0.2);
+        }
+    
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #2D3748;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+    
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+    
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    
+        nav {
+            background-color: #000000; /* Yellow background */
+            color: #000; /* Black text */
+            padding: 10px 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: center; /* Center the buttons */
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+    
+        nav a {
+            margin: 0 1rem;
+        }
+    
+        nav button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background-color: #f1c40f; /* Yellow background */
+            color: #000; /* Black text */
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+        }
+    
+        nav button:hover {
+            background-color: #000000; /* Darker yellow on hover */
+        }
+    
+        button {
+            background-color: #f1c40f; /* Yellow background */
+            color: #000; /* Black text */
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+    
+    </style>
+    </head>
+    <body>
+        <nav role="navigation" aria-label="Main navigation">
+            <a href="index.html"><button aria-label="Go to home page" id="home-tab">Home</button></a>
+            <a href="upload.html"><button aria-label="Go to upload page" id="upload-tab">Upload/Scan</button></a>
+            <a href="chatbot.html"><button aria-label="Go to chatbot page" id="chatbot-tab">Chatbot</button></a>
+            <a href="camera.html"><button aria-current="page" aria-label="Current page: Scanner" id="scan-tab">Scan</button></a>
+        </nav>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl mt-20">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4">Document Scanner</h1>
+            <p class="text-gray-400">Drag and drop or click to upload your documents</p>
+        </header>
+
+        <main>
+            <div class="upload-zone rounded-lg p-8 text-center cursor-pointer mb-8">
+                <input type="file" id="file-upload" accept="image/*" class="hidden" />
+                <div class="flex flex-col items-center justify-center space-y-4">
+                    <svg class="w-16 h-16 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <div id="upload-text" class="text-lg">
+                        Drop your file here or click to browse
+                    </div>
+                    <div id="file-info" class="text-sm text-gray-400"></div>
+                </div>
+            </div>
+
+            <div id="progress-container" class="hidden mb-8">
+                <div class="flex justify-between mb-2">
+                    <span id="progress-status" class="text-sm text-gray-400">Processing...</span>
+                    <span id="progress-percentage" class="text-sm text-gray-400">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="results" class="hidden bg-gray-800 rounded-lg p-6 space-y-6">
+                <div class="border-b border-gray-700 pb-4">
+                    <h3 class="" style="color: aliceblue;">Extracted Text</h3>
+                    <div id="extracted-text" class="text-gray-300 whitespace-pre-wrap"></div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Summary</h3>
+                    <div id="summary" class="text-gray-300"></div>
+                </div>
+            </div>
+
+            <div class="text-center mt-8">
+                <button id="generate-summary" class="">Generate Summary</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadZone = document.querySelector('.upload-zone');
+            const fileInput = document.getElementById('file-upload');
+            const fileInfo = document.getElementById('file-info');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            const progressStatus = document.getElementById('progress-status');
+            const progressPercentage = document.getElementById('progress-percentage');
+            const resultsSection = document.getElementById('results');
+            const extractedTextEl = document.getElementById('extracted-text');
+            const summaryEl = document.getElementById('summary');
+            const generateSummaryBtn = document.getElementById('generate-summary');
+            const stopVoiceButton = document.createElement('button'); // Stop button
+    
+            stopVoiceButton.innerText = "Stop Reading";
+            stopVoiceButton.id = "stop-voice";
+            stopVoiceButton.style.backgroundColor = '#EF4444'; // Red background for stop button
+            stopVoiceButton.style.color = '#fff';
+            document.body.appendChild(stopVoiceButton);
+    
+            let synth = window.speechSynthesis;
+            let isReading = false;
+            let currentUtterance = null;
+    
+            function updateProgress(percent) {
+                progressBarFill.style.width = `${percent}%`;
+                progressPercentage.textContent = `${percent}%`;
+            }
+    
+            function showError(message) {
+                fileInfo.textContent = message;
+                fileInfo.className = 'text-red-500 mt-2';
+                setTimeout(() => {
+                    fileInfo.textContent = '';
+                    fileInfo.className = 'text-sm text-gray-400';
+                }, 5000);
+            }
+    
+            async function uploadFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select a valid image file.');
+                    return;
+                }
+    
+                progressContainer.classList.remove('hidden');
+                resultsSection.classList.add('hidden')
+    
+                const formData = new FormData();
+                formData.append('file', file);
+    
+                try {
+                    progressStatus.textContent = 'Uploading image...';
+                    updateProgress(30);
+    
+                    const response = await fetch('http://127.0.0.1:5000/upload_image', {
+                        method: 'POST',
+                        body: formData,
+                    });
+    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Upload failed');
+                    }
+    
+                    updateProgress(70);
+    
+                    const data = await response.json();
+    
+                    extractedTextEl.textContent = 'Bold';
+                    summaryEl.textContent = data.summary || 'No summary generated';
+    
+                    updateProgress(100);
+                    progressStatus.textContent = 'Complete!';
+                    resultsSection.classList.remove('hidden');
+    
+                    setTimeout(() => {
+                        progressContainer.classList.add('hidden');
+                    }, 2000);
+                } catch (error) {
+                    console.error(error);
+                    showError(error.message || 'Upload failed. Please try again.');
+                    progressContainer.classList.add('hidden');
+                }
+            }
+    
+            async function fetchSummary() {
+    try {
+        progressStatus.textContent = 'Fetching last summary...';
+
+        const response = await fetch('http://127.0.0.1:5000/get_last_summary');
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to fetch summary');
+        }
+
+        const data = await response.json();
+        
+        // Display the summary in bold
+        summaryEl.innerHTML = `Summary: <strong>${data.last_summary || 'No summary found'}</strong>`;
+        resultsSection.classList.remove('hidden');
+        
+        readSummaryAloud(data.last_summary); // Read summary aloud when fetched
+    } catch (error) {
+        console.error(error);
+        showError(error.message || 'Failed to generate summary.');
+    }
+}
+    
+            // Function to read the summary aloud
+            function readSummaryAloud(text) {
+                if (synth.speaking || synth.pending) {
+                    synth.cancel(); // Cancel any ongoing speech
+                }
+    
+                if (text !== '') {
+                    let utterance = new SpeechSynthesisUtterance(text);
+                    utterance.onstart = () => {
+                        isReading = true;
+                        stopVoiceButton.style.display = 'block'; // Show stop button
+                    };
+    
+                    utterance.onend = () => {
+                        isReading = false;
+                        stopVoiceButton.style.display = 'none'; // Hide stop button when done
+                    };
+    
+                    synth.speak(utterance);
+                    currentUtterance = utterance;
+                }
+            }
+    
+            // Stop reading the summary
+            stopVoiceButton.addEventListener('click', () => {
+                if (synth.speaking || synth.pending) {
+                    synth.cancel(); // Stop any ongoing speech
+                    stopVoiceButton.style.display = 'none'; // Hide stop button
+                }
+            });
+    
+            // Handle drag and drop
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('border-accent');
+            });
+    
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('border-accent');
+            });
+    
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('border-accent');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    fileInfo.textContent = `Selected: ${file.name}`;
+                    uploadFile(file);
+                }
+            });
+    
+            // Handle click upload
+            uploadZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+    
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    fileInfo.textContent = `Selected: ${file.name}`;
+                    uploadFile(file);
+                }
+            });
+    
+            // Generate summary button
+            generateSummaryBtn.addEventListener('click', fetchSummary);
+        });
+    </script>
+    
+    
+</body>
+</html>

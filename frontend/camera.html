@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Scanner</title>
+    <style>
+        :root {
+            --primary: #f1c40f;
+            --secondary: #1a1a2e;
+            --accent: #4f46e5;
+            --text: #000000;
+            --background: #0a0a1f;
+            --card: #1a1a2e;
+            --success: #22c55e;
+            --error: #ef4444;
+            --focus: #00f7ff;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border: 2px solid var(--card);
+        }
+
+        .controls {
+            margin-top: 1rem;
+        }
+
+        #summarized-text {
+            margin-top: 2rem;
+            background: var(--card);
+            color: var(--text);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        button {
+            background: var(--primary);
+            color: var(--text);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--accent);
+            border-color: var(--primary);
+            color: var(--background);
+            transform: translateY(-2px);
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        button[aria-current="page"] {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav role="navigation" aria-label="Main navigation">
+        <a href="index.html"><button aria-label="Go to home page" id="home-tab">Home</button></a>
+        <a href="upload.html"><button aria-label="Go to upload page" id="upload-tab">Upload/Scan</button></a>
+        <a href="chatbot.html"><button aria-label="Go to chatbot page" id="chatbot-tab">Chatbot</button></a>
+        <a href="camera.html"><button aria-current="page" aria-label="Current page: Scanner" id="scan-tab">Scan</button></a>
+    </nav>
+
+    <div class="container">
+        <h1>Document Scanner</h1>
+        <!-- Image element that will show the live camera feed -->
+        <img id="image-feed" alt="Camera Feed" />
+        <div class="controls">
+            <button id="capture-btn">Get Summary</button>
+        </div>
+        <div id="summarized-text"></div>
+    </div>
+    
+    <script>
+        const imageElement = document.getElementById("image-feed");
+        const captureBtn = document.getElementById("capture-btn");
+        const summarizedTextElement = document.getElementById("summarized-text");
+
+        // Set the image source to the camera feed from the backend
+        function startCamera() {
+            // Set the source of the image element to the camera stream from the backend
+            imageElement.src = "http://127.0.0.1:5000/camera";
+        }
+
+        // Fetch the last summary from the server and display it
+        async function getLastSummary() {
+            const response = await fetch('http://127.0.0.1:5000/get_last_summary');
+            
+            if (response.ok) {
+                const data = await response.json();
+                displayExtractedTextAndSummary(data);
+            } else {
+                alert('Failed to fetch the last summary.');
+            }
+        }
+
+        // Display the extracted text and summary from the backend
+        function displayExtractedTextAndSummary(data) {
+            const extractedText = data.extracted_text || "No extracted text available.";
+            const summary = data.summary || "No summary available.";
+
+            summarizedTextElement.innerHTML = `
+                <h3>Extracted Text:</h3>
+                <pre>${extractedText}</pre>
+                <h3>Summary:</h3>
+                <p>${summary}</p>
+            `;
+        }
+
+        // Event listener for the capture button
+        captureBtn.addEventListener("click", getLastSummary);
+
+        // Start the camera when the page loads
+        window.onload = startCamera;
+    </script>
+</body>
+</html>

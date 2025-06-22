@@ -1,0 +1,195 @@
+:root {
+    --primary: #00f7ff;
+    --secondary: #1a1a2e;
+    --accent: #4f46e5;
+    --text: #ffffff;
+    --background: #0a0a1f;
+    --card: #1a1a2e;
+    --success: #22c55e;
+    --error: #ef4444;
+    --focus: #00f7ff;
+}
+
+/* Base styles */
+body {
+    background: var(--background);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Typography */
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: var(--primary);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.nav-link {
+    background: var(--card);
+    color: var(--text);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    background: var(--accent);
+    border-color: var(--primary);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.nav-link.current {
+    background: var(--accent);
+    border-color: var(--primary);
+}
+
+/* Cards */
+.welcome-card,
+.upload-card,
+.scanner-card,
+.chat-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 20px rgba(0, 247, 255, 0.2);
+}
+
+/* Upload Section */
+.upload-button,
+.action-button {
+    justify-content: center;
+    align-items: center;
+    background: var(--accent);
+    color: var(--text);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.upload-button:hover,
+.action-button:hover {
+    background: var(--primary);
+    color: var(--background);
+}
+
+.camera-container {
+    text-align: center;
+}
+
+.camera {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* Chat Interface */
+.chat-card {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-history {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+}
+
+.chat-input {
+    display: flex;
+    gap: 1rem;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--primary);
+    background: var(--secondary);
+    color: var(--text);
+}
+
+/* Accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent);
+    color: var(--text);
+    padding: 8px;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Focus States */
+*:focus {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    nav {
+        flex-direction: column;
+    }
+    
+    .nav-link {
+        width: 100%;
+        text-align: center;
+    }
+}

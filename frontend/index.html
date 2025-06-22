@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Assistant - Home</title>
+  <style>
+    :root {
+      --primary: #00f7ff;
+      --secondary: #1a1a2e;
+      --accent: #4f46e5;
+      --text: #ffffff;
+      --background: #0a0a1f;
+      --card: #1a1a2e;
+      --success: #22c55e;
+      --error: #ef4444;
+      --focus: #00f7ff;
+    }
+
+    /* Base styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom, #000011, #000022);
+      color: white;
+      margin: 0;
+      padding: 0;
+      background-attachment: fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 100px auto 0; /* To account for fixed header */
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Header styles */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: #f1c40f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .navbar {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-button {
+      background-color: #f1c40f;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid transparent;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .nav-button:hover {
+      background-color: #f39c12;
+      transform: translateY(-5px);
+      border-color: #f39c12;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #f1c40f;
+      text-shadow: 4px 6px 10px rgba(0, 0, 0, 0.7);
+      margin-bottom: 30px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .controls button {
+      background-color: #e74c3c;
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .controls button:hover {
+      background-color: #c0392b;
+      transform: translateY(-5px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar {
+        flex-wrap: wrap;
+      }
+
+      .nav-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Prism</h1>
+    <div class="navbar">
+      <a href="index.html" class="nav-button">Home</a>
+      <a href="upload.html" class="nav-button">Upload/Scan</a>
+      <a href="chatbot.html" class="nav-button">Chatbot</a>
+      <a href="camera.html" class="nav-button">Scan</a>
+    </div>
+  </header>
+  <div class="container">
+    <h1>Welcome to Document Assistant</h1>
+    <p>Welcome! You can use voice commands to navigate through the site.</p>
+    <div class="controls">
+      <button id="voice-toggle">Enable Voice Bot</button>
+      <button id="disable-voice">Disable Voice Bot</button>
+      <button id="increase-font">Increase Font Size</button>
+      <button id="decrease-font">Decrease Font Size</button>
+    </div>
+  </div>
+  <script>
+    // Speech Recognition Setup
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = true;
+    recognition.lang = "en-US";
+    let isProcessing = false; // Prevent overlapping commands
+    const synth = window.speechSynthesis; // For voice feedback
+
+    // Automatically start voice recognition on page load
+    window.onload = function () {
+      speak("Voice bot is now active. I am listening for your commands.");
+      startVoiceRecognition();
+    };
+
+    recognition.onresult = function (event) {
+      const command = event.results[event.resultIndex][0].transcript.toLowerCase();
+      console.log("Command: " + command);
+      handleVoiceCommand(command);
+    };
+
+    function startVoiceRecognition() {
+      recognition.start();
+      console.log("Voice recognition started.");
+    }
+
+    function stopVoiceRecognition() {
+      recognition.stop();
+      console.log("Voice recognition stopped.");
+      speak("Voice bot has been disabled.");
+    }
+
+    // Handle voice commands
+    function handleVoiceCommand(command) {
+      if (isProcessing) return; // Ignore if a command is already being processed
+      isProcessing = true;
+
+      // Repeat the command to the user
+      speak(`You said: ${command}`);
+
+      if (command.includes("home")) {
+        speak("Navigating to the home page.");
+        window.location.href = "index.html";
+      } else if (command.includes("upload") || command.includes("scan")) {
+        speak("Navigating to the upload or scan page.");
+        window.location.href = "upload.html";
+      } else if (command.includes("chatbot")) {
+        speak("Navigating to the chatbot page.");
+        window.location.href = "chatbot.html";
+      } else if (command.includes("increase font")) {
+        speak("Increasing font size.");
+        adjustFontSize("increase");
+      } else if (command.includes("decrease font")) {
+        speak("Decreasing font size.");
+        adjustFontSize("decrease");
+      } else if (command.includes("disable")) {
+        stopVoiceRecognition();
+      } else {
+        speak("Please try again.");
+      }
+
+      // Allow new commands after processing
+      setTimeout(() => {
+        isProcessing = false;
+      }, 10000);
+    }
+
+    // Adjust font size of elements within the container
+    function adjustFontSize(action) {
+      const elements = document.querySelectorAll('.container h1, .container p');
+      elements.forEach(element => {
+        const currentSize = parseInt(window.getComputedStyle(element).fontSize);
+        const newSize = action === "increase" ? currentSize + 4 : currentSize - 4;
+        element.style.fontSize = `${newSize}px`;
+      });
+    }
+
+    // Speak a message using Speech Synthesis
+    function speak(message) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = "en-US";
+      synth.speak(utterance);
+    }
+
+    // Optional buttons for manual control
+    document.getElementById("voice-toggle").addEventListener("click", () => {
+      if (recognition.isStarted) {
+        stopVoiceRecognition();
+      } else {
+        startVoiceRecognition();
+        speak("Voice bot is now active.");
+      }
+    });
+
+    document.getElementById("increase-font").addEventListener("click", () => adjustFontSize("increase"));
+    document.getElementById("decrease-font").addEventListener("click", () => adjustFontSize("decrease"));
+
+    // Button to disable voice bot
+    document.getElementById("disable-voice").addEventListener("click", () => {
+      stopVoiceRecognition();
+    });
+  </script>
+</body>
+</html>
